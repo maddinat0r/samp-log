@@ -12,7 +12,7 @@ logprintf_t logprintf;
 
 PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports()
 {
-	return SUPPORTS_VERSION | SUPPORTS_AMX_NATIVES | SUPPORTS_PROCESS_TICK; 
+	return SUPPORTS_VERSION | SUPPORTS_AMX_NATIVES; 
 }
 
 PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData) 
@@ -26,15 +26,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 
 PLUGIN_EXPORT void PLUGIN_CALL Unload() 
 {
-	logprintf("plugin.log: Unloading plugin...");
-
-
 	logprintf("plugin.log: Plugin unloaded."); 
-}
-
-PLUGIN_EXPORT void PLUGIN_CALL ProcessTick() 
-{
-	
 }
 
 
