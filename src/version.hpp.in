@@ -1,0 +1,3 @@
+#pragma once
+
+#define LOG_PLUGIN_VERSION "@LOG_PLUGIN_VERSION@"

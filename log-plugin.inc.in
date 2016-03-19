@@ -1,0 +1,10 @@
+/**
+ * Log plugin v@LOG_PLUGIN_VERSION@
+ * by maddinat0r
+ */
+
+#if defined log_plugin_included
+	#endinput
+#endif
+#define log_plugin_included
+
