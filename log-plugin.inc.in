@@ -8,3 +8,21 @@
 #endif
 #define log_plugin_included
 
+
+enum E_LOGLEVEL
+{
+	NONE = 0,
+	DEBUG = 1,
+	INFO = 2,
+	WARNING = 4,
+	ERROR = 8,
+};
+
+
+native Logger:CreateLog(const name[], E_LOGLEVEL:level = INFO | WARNING | ERROR);
+native DestroyLog(Logger:logger);
+
+native SetLogLevel(Logger:logger, E_LOGLEVEL:level, bool:enabled);
+native bool:IsLogLevel(Logger:logger, E_LOGLEVEL:level);
+
+native Log(Logger:logger, E_LOGLEVEL:level, const msg[], {Float,_}:...);

@@ -10,6 +10,7 @@ include_directories(
 	${SAMPSDK_INCLUDE_DIR}
 	${LOG_PLUGIN_CONFIG_INCLUDE_DIR}
 	${PROJECT_SOURCE_DIR}/libs/log-core/include
+	${PROJECT_SOURCE_DIR}/libs/log-core/libs/cppformat
 )
 
 configure_file(
@@ -28,6 +29,8 @@ add_samp_plugin(log-plugin
 	${SAMPSDK_DIR}/amxplugin.cpp
 	${SAMPSDK_DIR}/amxplugin2.cpp
 	${SAMPSDK_DIR}/amx/getch.c
+	CLogManager.cpp
+	CLogManager.hpp
 	natives.cpp
 	natives.hpp
 	CSingleton.hpp
@@ -36,13 +39,13 @@ add_samp_plugin(log-plugin
 	plugin.def
 )
 
-add_dependencies(log-plugin log-core)
+add_dependencies(log-plugin log-core cppformat)
 
 if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS -DNOMINMAX)
 endif()
 
-target_link_libraries(log-plugin log-core)
+target_link_libraries(log-plugin log-core cppformat)
 
 if(UNIX)
 	set_target_properties(log-plugin PROPERTIES

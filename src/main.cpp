@@ -40,7 +40,11 @@ PLUGIN_EXPORT void PLUGIN_CALL ProcessTick()
 
 extern "C" const AMX_NATIVE_INFO native_list[] = 
 {
-	// AMX_DEFINE_NATIVE(NATIVE_NAME)
+	AMX_DEFINE_NATIVE(CreateLog)
+	AMX_DEFINE_NATIVE(DestroyLog)
+	AMX_DEFINE_NATIVE(SetLogLevel)
+	AMX_DEFINE_NATIVE(IsLogLevel)
+	AMX_DEFINE_NATIVE(Log)
 	{NULL, NULL}
 };
 

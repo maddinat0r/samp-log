@@ -11,6 +11,10 @@
 
 namespace Native 
 {
-	//AMX_DECLARE_NATIVE(NATIVE_NAME);
+	AMX_DECLARE_NATIVE(CreateLog);
+	AMX_DECLARE_NATIVE(DestroyLog);
+	AMX_DECLARE_NATIVE(SetLogLevel);
+	AMX_DECLARE_NATIVE(IsLogLevel);
+	AMX_DECLARE_NATIVE(Log);
 	
 };
