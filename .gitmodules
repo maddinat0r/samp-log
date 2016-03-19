@@ -1,0 +1,9 @@
+[submodule "libs/log-core"]
+	path = libs/log-core
+	url = https://github.com/maddinat0r/samp-log-core.git
+[submodule "libs/sdk"]
+	path = libs/sdk
+	url = https://github.com/maddinat0r/samp-plugin-sdk.git
+[submodule "libs/cmake"]
+	path = libs/cmake
+	url = https://github.com/Zeex/cmake-modules.git
