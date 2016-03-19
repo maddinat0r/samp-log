@@ -5,6 +5,7 @@
 #include <samplog/DebugInfo.hpp>
 
 #include <set>
+#include <cstring>
 
 
 static samplog::LogLevel GetLogLevelFromPawn(cell levelid)

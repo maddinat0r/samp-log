@@ -12,6 +12,6 @@ LoggerId_t CLogManager::Create(const char *logname)
 	while (m_Logs.find(id) != m_Logs.end())
 		++id;
 
-	m_Logs.insert({ id, samplog::CreateLogger(logname) });
+	m_Logs.emplace(id, samplog::CreateLogger(logname));
 	return id;
 }
