@@ -169,8 +169,10 @@ AMX_DECLARE_NATIVE(Native::Log)
 	const char
 		*file = "",
 		*func = "";
+	uint16_t amx_flags = 0;
+	amx_Flags(amx, &amx_flags);
 
-	if ((amx->flags & AMX_FLAG_DEBUG) == AMX_FLAG_DEBUG)
+	if ((amx_flags & AMX_FLAG_DEBUG) == AMX_FLAG_DEBUG)
 	{
 		if (samplog::GetLastAmxLine(amx, line))
 		{
