@@ -9,7 +9,7 @@
 #define log_plugin_included
 
 
-enum E_LOGLEVEL
+enum E_LOG_LOGLEVEL
 {
 	NONE = 0,
 	DEBUG = 1,
@@ -19,10 +19,10 @@ enum E_LOGLEVEL
 };
 
 
-native Logger:CreateLog(const name[], E_LOGLEVEL:level = INFO | WARNING | ERROR);
+native Logger:CreateLog(const name[], E_LOG_LOGLEVEL:level = INFO | WARNING | ERROR);
 native DestroyLog(Logger:logger);
 
-native SetLogLevel(Logger:logger, E_LOGLEVEL:level, bool:enabled);
-native bool:IsLogLevel(Logger:logger, E_LOGLEVEL:level);
+native SetLogLevel(Logger:logger, E_LOG_LOGLEVEL:level, bool:enabled);
+native bool:IsLogLevel(Logger:logger, E_LOG_LOGLEVEL:level);
 
-native Log(Logger:logger, E_LOGLEVEL:level, const msg[], {Float,_}:...);
+native Log(Logger:logger, E_LOG_LOGLEVEL:level, const msg[], {Float,_}:...);
