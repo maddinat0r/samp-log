@@ -19,6 +19,8 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 {
 	pAMXFunctions = ppData[PLUGIN_DATA_AMX_EXPORTS];
 	logprintf = (logprintf_t)ppData[PLUGIN_DATA_LOGPRINTF];
+
+	samplog::Init();
 	
 	logprintf(" >> plugin.log: v" LOG_PLUGIN_VERSION " successfully loaded.");
 	return true;
@@ -27,6 +29,9 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 PLUGIN_EXPORT void PLUGIN_CALL Unload() 
 {
 	CLogManager::CSingleton::Destroy();
+
+	samplog::Exit();
+
 	logprintf("plugin.log: Plugin unloaded."); 
 }
 
