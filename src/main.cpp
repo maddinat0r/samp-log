@@ -3,7 +3,7 @@
 
 #include "sdk.hpp"
 
-#include <samplog/DebugInfo.hpp>
+#include <samplog/DebugInfo.h>
 
 
 extern void	*pAMXFunctions;

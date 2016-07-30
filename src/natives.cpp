@@ -1,60 +1,17 @@
 #include "natives.hpp"
 #include "CLogManager.hpp"
 
-#include <cppformat/format.h>
-#include <samplog/DebugInfo.hpp>
-
-#include <set>
-#include <cstring>
+#include <fmt/format.h>
 
 
-static samplog::LogLevel GetLogLevelFromPawn(cell levelid)
-{
-	switch (levelid)
-	{
-	case 1: // DEBUG
-		return samplog::LogLevel::DEBUG;
-		break;
-	case 2: // INFO
-		return samplog::LogLevel::INFO;
-		break;
-	case 4: // WARNING
-		return samplog::LogLevel::WARNING;
-		break;
-	case 8: // ERROR
-		return samplog::LogLevel::ERROR;
-		break;
-	default:
-		return samplog::LogLevel::NONE;
-	}
-}
-
-// native Logger:CreateLog(const name[], E_LOGLEVEL:level = INFO | WARNING | ERROR);
+// native Logger:CreateLog(const name[], E_LOGLEVEL:level = INFO | WARNING | ERROR, bool:debuginfo = true);
 AMX_DECLARE_NATIVE(Native::CreateLog)
 {
 	const char *name = nullptr;
-	cell pawn_loglevel = params[2];
 	amx_StrParam(amx, params[1], name);
 
-	if (strstr(name, "plugins") == name)
-		return false;
-
-	LoggerId_t logid = CLogManager::Get()->Create(name);
-	auto &logger = CLogManager::Get()->GetLogger(logid);
-	std::set<samplog::LogLevel> levels{
-		samplog::LogLevel::DEBUG,
-		samplog::LogLevel::INFO,
-		samplog::LogLevel::WARNING,
-		samplog::LogLevel::ERROR
-	};
-
-	for (auto &l : levels)
-	{
-		if (pawn_loglevel & static_cast<std::underlying_type<samplog::LogLevel>::type>(l))
-			logger->SetLogLevel(l, true);
-	}
-
-	return logid;
+	return CLogManager::Get()->Create(
+		name, static_cast<LogLevel>(params[2]), params[3] != 0);
 }
 
 // native DestroyLog(Logger:logger);
@@ -64,22 +21,19 @@ AMX_DECLARE_NATIVE(Native::DestroyLog)
 	if (CLogManager::Get()->IsValid(logid) == false)
 		return 0;
 
-	return CLogManager::Get()->Destroy(logid);
+	return CLogManager::Get()->Destroy(logid) ? 1 : 0;
 }
 
-// native SetLogLevel(Logger:logger, E_LOGLEVEL:level, bool:enabled);
+// native SetLogLevel(Logger:logger, E_LOGLEVEL:level);
 AMX_DECLARE_NATIVE(Native::SetLogLevel)
 {
 	const LoggerId_t logid = params[1];
 	if (CLogManager::Get()->IsValid(logid) == false)
 		return 0;
 
-	samplog::LogLevel loglevel = GetLogLevelFromPawn(params[2]);
-	if (loglevel == samplog::LogLevel::NONE)
-		return 0;
+	CLogManager::Get()->GetLogger(logid).
+		SetLogLevel(static_cast<samplog::LogLevel>(params[2]));
 
-	auto &logger = CLogManager::Get()->GetLogger(logid);
-	logger->SetLogLevel(loglevel, params[2] != 0);
 	return 1;
 }
 
@@ -90,12 +44,8 @@ AMX_DECLARE_NATIVE(Native::IsLogLevel)
 	if (CLogManager::Get()->IsValid(logid) == false)
 		return 0;
 
-	samplog::LogLevel loglevel = GetLogLevelFromPawn(params[2]);
-	if (loglevel == samplog::LogLevel::NONE)
-		return 0;
-
-	auto &logger = CLogManager::Get()->GetLogger(logid);
-	return logger->IsLogLevel(loglevel);
+	return CLogManager::Get()->GetLogger(logid).
+		IsLogLevel(static_cast<samplog::LogLevel>(params[2]));
 }
 
 // native Log(Logger:logger, E_LOGLEVEL:level, const msg[], {Float,_}:...);
@@ -105,8 +55,10 @@ AMX_DECLARE_NATIVE(Native::Log)
 	if (CLogManager::Get()->IsValid(logid) == false)
 		return 0;
 
-	samplog::LogLevel loglevel = GetLogLevelFromPawn(params[2]);
-	if (loglevel == samplog::LogLevel::NONE)
+	auto &logger = CLogManager::Get()->GetLogger(logid);
+
+	const samplog::LogLevel loglevel = static_cast<decltype(loglevel)>(params[2]);
+	if (!logger.IsLogLevel(loglevel))
 		return 0;
 
 
@@ -164,22 +116,5 @@ AMX_DECLARE_NATIVE(Native::Log)
 	// copy rest of format string
 	str_writer << format_str.substr(spec_offset);
 	
-	auto &logger = CLogManager::Get()->GetLogger(logid);
-	int line = 0;
-	const char
-		*file = "",
-		*func = "";
-	uint16_t amx_flags = 0;
-	amx_Flags(amx, &amx_flags);
-
-	if ((amx_flags & AMX_FLAG_DEBUG) == AMX_FLAG_DEBUG)
-	{
-		if (samplog::GetLastAmxLine(amx, line))
-		{
-			samplog::GetLastAmxFile(amx, file);
-			samplog::GetLastAmxFunction(amx, func);
-		}
-	}
-	logger->Log(str_writer.c_str(), loglevel, line, file, func);
-	return 1;
+	return logger.Log(loglevel, str_writer.c_str(), amx) ? 1 : 0;
 }

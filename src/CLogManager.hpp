@@ -1,12 +1,47 @@
 #pragma once
 
-#include <samplog/Logger.hpp>
+#include <samplog/Logger.h>
 #include "CSingleton.hpp"
+#include "sdk.hpp"
 
-#include <unordered_map>
+#include <string>
+#include <map>
 
+using samplog::LogLevel;
 
+using Logger_t = class CSampLogger;
 using LoggerId_t = unsigned int;
+
+
+class CSampLogger
+{
+public:
+	CSampLogger(std::string &&name, LogLevel level, bool debuginfo) :
+		m_Module(std::move(name)),
+		m_LogLevel(level),
+		m_DebugInfos(debuginfo)
+	{ }
+	~CSampLogger() = default;
+
+public:
+	bool Log(LogLevel level, const char *msg, AMX *amx);
+
+	inline void SetLogLevel(LogLevel log_level)
+	{
+		m_LogLevel = log_level;
+	}
+	inline bool IsLogLevel(LogLevel log_level) const
+	{
+		return (m_LogLevel & log_level) == log_level;
+	}
+
+
+private:
+	std::string m_Module;
+	LogLevel m_LogLevel;
+	bool m_DebugInfos;
+
+};
 
 
 class CLogManager : public CSingleton<CLogManager>
@@ -17,10 +52,10 @@ private:
 	~CLogManager() = default;
 
 private:
-	std::unordered_map<LoggerId_t, samplog::Logger_t> m_Logs;
+	std::map<LoggerId_t, Logger_t> m_Logs;
 
 public:
-	LoggerId_t Create(const char *logname);
+	LoggerId_t Create(std::string logname, LogLevel level, bool debuginfo);
 	inline bool Destroy(LoggerId_t logid)
 	{
 		return m_Logs.erase(logid) == 1;
@@ -30,7 +65,7 @@ public:
 	{
 		return m_Logs.find(logid) != m_Logs.end();
 	}
-	inline samplog::Logger_t &GetLogger(LoggerId_t logid)
+	inline Logger_t &GetLogger(LoggerId_t logid)
 	{
 		return m_Logs.at(logid);
 	}

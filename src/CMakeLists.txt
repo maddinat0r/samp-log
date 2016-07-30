@@ -39,13 +39,13 @@ add_samp_plugin(log-plugin
 	plugin.def
 )
 
-add_dependencies(log-plugin log-core cppformat)
+add_dependencies(log-plugin log-core fmt)
 
 if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS -DNOMINMAX)
 endif()
 
-target_link_libraries(log-plugin log-core cppformat)
+target_link_libraries(log-plugin log-core fmt)
 
 if(UNIX)
 	set_target_properties(log-plugin PROPERTIES
