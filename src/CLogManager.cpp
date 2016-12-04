@@ -6,18 +6,14 @@
 
 bool CSampLogger::Log(LogLevel level, const char *msg, AMX *amx)
 {
-	int line = 0;
-	const char
-		*file = "",
-		*func = "";
+	bool ret_val = false;
+	std::vector<samplog::AmxFuncCallInfo> call_info;
+	if (m_DebugInfos && samplog::GetAmxFunctionCallTrace(amx, call_info))
+		ret_val = samplog::LogMessage(m_Module.c_str(), level, msg, call_info.data(), call_info.size());
+	else
+		ret_val = samplog::LogMessage(m_Module.c_str(), level, msg);
 
-	if (m_DebugInfos && samplog::GetLastAmxLine(amx, line))
-	{
-		samplog::GetLastAmxFile(amx, file);
-		samplog::GetLastAmxFunction(amx, func);
-	}
-
-	return samplog::LogMessage(m_Module.c_str(), level, msg, line, file, func);
+	return ret_val;
 }
 
 
