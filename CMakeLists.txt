@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(log-plugin)
 
-set(LOG_PLUGIN_VERSION "0.2.1")
+set(LOG_PLUGIN_VERSION "0.3")
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/libs/cmake")
 
