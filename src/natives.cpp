@@ -121,13 +121,6 @@ AMX_DECLARE_NATIVE(Native::Log)
 
 	while ((spec_pos = format_str.find('%', spec_offset)) != std::string::npos)
 	{
-		if (param_counter >= num_dyn_args)
-		{
-			PluginLog::Get()->LogNative(LogLevel::ERROR,
-				"more format specifiers found than arguments passed");
-			return 0;
-		}
-
 		if (spec_pos == (format_str.length() - 1))
 		{
 			PluginLog::Get()->LogNative(LogLevel::ERROR,
@@ -138,33 +131,53 @@ AMX_DECLARE_NATIVE(Native::Log)
 		str_writer << format_str.substr(spec_offset, spec_pos - spec_offset);
 		spec_offset = spec_pos + 2; // 2 = '%' + char specifier (like 'd' or 's')
 
-		cell *param_addr = nullptr;
-
-		const char formt_spec = format_str.at(spec_pos + 1);
-		switch (formt_spec)
+		const char format_spec = format_str.at(spec_pos + 1);
+		if (format_spec == '%')
 		{
-		case '%': // '%' escape
 			str_writer << '%';
-			break;
+			continue;
+		}
+
+		if (param_counter >= num_dyn_args)
+		{
+			PluginLog::Get()->LogNative(LogLevel::ERROR,
+				"format specifier at position {} has no argument passed", spec_pos);
+			return 0;
+		}
+
+		cell
+			*param_addr = nullptr,
+			&param = params[first_param_idx + param_counter++];
+
+		switch (format_spec)
+		{
 		case 's': // string
-			str_writer << amx_GetCppString(amx, params[first_param_idx + param_counter]);
+			str_writer << amx_GetCppString(amx, param);
 			break;
 		case 'd': // decimal
 		case 'i': // integer
-			amx_GetAddr(amx, params[first_param_idx + param_counter], &param_addr);
+			if (amx_GetAddr(amx, param, &param_addr) != AMX_ERR_NONE || param_addr == nullptr)
+			{
+				PluginLog::Get()->LogNative(LogLevel::ERROR,
+					"error while retrieving AMX address");
+				return 0;
+			}
 			str_writer << static_cast<int>(*param_addr);
 			break;
 		case 'f': // float
-			amx_GetAddr(amx, params[first_param_idx + param_counter], &param_addr);
+			if (amx_GetAddr(amx, param, &param_addr) != AMX_ERR_NONE || param_addr == nullptr)
+			{
+				PluginLog::Get()->LogNative(LogLevel::ERROR,
+					"error while retrieving AMX address");
+				return 0;
+			}
 			str_writer << amx_ctof(*param_addr);
 			break;
 		default:
 			PluginLog::Get()->LogNative(LogLevel::ERROR,
-				"invalid format specifier '%{}'", formt_spec);
+				"invalid format specifier '%{}'", format_spec);
 			return 0;
 		}
-
-		param_counter++;
 	}
 
 	// copy rest of format string
