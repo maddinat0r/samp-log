@@ -10,7 +10,6 @@ include_directories(
 	${SAMPSDK_INCLUDE_DIR}
 	${LOG_PLUGIN_CONFIG_INCLUDE_DIR}
 	${PROJECT_SOURCE_DIR}/libs/log-core/include
-	${PROJECT_SOURCE_DIR}/libs/log-core/libs/cppformat
 )
 
 configure_file(
@@ -37,6 +36,29 @@ add_samp_plugin(log-plugin
 	main.cpp
 	sdk.hpp
 	plugin.def
+)
+
+target_compile_features(log-plugin PUBLIC 
+	cxx_auto_type 
+	cxx_decltype 
+	cxx_defaulted_functions 
+	cxx_default_function_template_args
+	cxx_delegating_constructors
+	cxx_deleted_functions
+	cxx_enum_forward_declarations
+	cxx_explicit_conversions
+	cxx_extended_friend_declarations
+	cxx_lambdas
+	cxx_inheriting_constructors
+	cxx_noexcept
+	cxx_nonstatic_member_init
+	cxx_nullptr
+	cxx_range_for
+	cxx_reference_qualified_functions
+	cxx_right_angle_brackets
+	cxx_rvalue_references
+	cxx_strong_enums
+	cxx_variadic_templates
 )
 
 add_dependencies(log-plugin log-core fmt)
