@@ -18,7 +18,7 @@ public:
 public:
 	Logger(std::string &&name, LogLevel level, bool debuginfo) :
 		m_Module(std::move(name)),
-		m_LogLevel(level),
+		LogLevel(level),
 		m_DebugInfos(debuginfo)
 	{ }
 	~Logger() = default;
@@ -26,19 +26,16 @@ public:
 public:
 	bool Log(LogLevel level, const char *msg, AMX *amx);
 
-	inline void SetLogLevel(LogLevel log_level)
-	{
-		m_LogLevel = log_level;
-	}
 	inline bool IsLogLevel(LogLevel log_level) const
 	{
-		return (m_LogLevel & log_level) == log_level;
+		return (LogLevel & log_level) == log_level;
 	}
 
+public:
+	LogLevel LogLevel;
 
 private:
 	std::string m_Module;
-	LogLevel m_LogLevel;
 	bool m_DebugInfos;
 
 };

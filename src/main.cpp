@@ -38,6 +38,8 @@ PLUGIN_EXPORT void PLUGIN_CALL Unload()
 
 extern "C" const AMX_NATIVE_INFO native_list[] = 
 {
+	AMX_DEFINE_NATIVE(SetLogPluginLogLevel)
+
 	AMX_DEFINE_NATIVE(CreateLog)
 	AMX_DEFINE_NATIVE(DestroyLog)
 	AMX_DEFINE_NATIVE(SetLogLevel)
