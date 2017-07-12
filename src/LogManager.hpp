@@ -7,8 +7,6 @@
 #include <string>
 #include <map>
 
-using samplog::LogLevel;
-
 
 class Logger
 {
@@ -16,7 +14,7 @@ public:
 	using Id = unsigned int;
 
 public:
-	Logger(std::string &&name, LogLevel level, bool debuginfo) :
+	Logger(std::string &&name, samplog::LogLevel level, bool debuginfo) :
 		m_Module(std::move(name)),
 		LogLevel(level),
 		m_DebugInfos(debuginfo)
@@ -24,15 +22,15 @@ public:
 	~Logger() = default;
 
 public:
-	bool Log(LogLevel level, const char *msg, AMX *amx);
+	bool Log(samplog::LogLevel level, const char *msg, AMX *amx);
 
-	inline bool IsLogLevel(LogLevel log_level) const
+	inline bool IsLogLevel(samplog::LogLevel log_level) const
 	{
 		return (LogLevel & log_level) == log_level;
 	}
 
 public:
-	LogLevel LogLevel;
+	samplog::LogLevel LogLevel;
 
 private:
 	std::string m_Module;
@@ -52,7 +50,7 @@ private:
 	std::map<Logger::Id, Logger> m_Logs;
 
 public:
-	Logger::Id Create(std::string logname, LogLevel level, bool debuginfo);
+	Logger::Id Create(std::string logname, samplog::LogLevel level, bool debuginfo);
 	inline bool Destroy(Logger::Id logid)
 	{
 		return m_Logs.erase(logid) == 1;
