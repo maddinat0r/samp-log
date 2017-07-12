@@ -9,19 +9,19 @@
 
 using samplog::LogLevel;
 
-using Logger_t = class CSampLogger;
-using LoggerId_t = unsigned int;
 
-
-class CSampLogger
+class Logger
 {
 public:
-	CSampLogger(std::string &&name, LogLevel level, bool debuginfo) :
+	using Id = unsigned int;
+
+public:
+	Logger(std::string &&name, LogLevel level, bool debuginfo) :
 		m_Module(std::move(name)),
 		m_LogLevel(level),
 		m_DebugInfos(debuginfo)
 	{ }
-	~CSampLogger() = default;
+	~Logger() = default;
 
 public:
 	bool Log(LogLevel level, const char *msg, AMX *amx);
@@ -44,28 +44,28 @@ private:
 };
 
 
-class CLogManager : public CSingleton<CLogManager>
+class LogManager : public CSingleton<LogManager>
 {
-	friend class CSingleton<CLogManager>;
+	friend class CSingleton<LogManager>;
 private:
-	CLogManager() = default;
-	~CLogManager() = default;
+	LogManager() = default;
+	~LogManager() = default;
 
 private:
-	std::map<LoggerId_t, Logger_t> m_Logs;
+	std::map<Logger::Id, Logger> m_Logs;
 
 public:
-	LoggerId_t Create(std::string logname, LogLevel level, bool debuginfo);
-	inline bool Destroy(LoggerId_t logid)
+	Logger::Id Create(std::string logname, LogLevel level, bool debuginfo);
+	inline bool Destroy(Logger::Id logid)
 	{
 		return m_Logs.erase(logid) == 1;
 	}
 
-	inline bool IsValid(LoggerId_t logid)
+	inline bool IsValid(Logger::Id logid)
 	{
 		return m_Logs.find(logid) != m_Logs.end();
 	}
-	inline Logger_t &GetLogger(LoggerId_t logid)
+	inline Logger &GetLogger(Logger::Id logid)
 	{
 		return m_Logs.at(logid);
 	}

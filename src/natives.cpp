@@ -1,5 +1,6 @@
 #include "natives.hpp"
-#include "CLogManager.hpp"
+#include "LogManager.hpp"
+#include "PluginLog.hpp"
 
 #include <fmt/format.h>
 
@@ -10,28 +11,28 @@ AMX_DECLARE_NATIVE(Native::CreateLog)
 	const char *name = nullptr;
 	amx_StrParam(amx, params[1], name);
 
-	return CLogManager::Get()->Create(
+	return LogManager::Get()->Create(
 		name, static_cast<LogLevel>(params[2]), params[3] != 0);
 }
 
 // native DestroyLog(Logger:logger);
 AMX_DECLARE_NATIVE(Native::DestroyLog)
 {
-	const LoggerId_t logid = params[1];
-	if (CLogManager::Get()->IsValid(logid) == false)
+	const Logger::Id logid = params[1];
+	if (LogManager::Get()->IsValid(logid) == false)
 		return 0;
 
-	return CLogManager::Get()->Destroy(logid) ? 1 : 0;
+	return LogManager::Get()->Destroy(logid) ? 1 : 0;
 }
 
 // native SetLogLevel(Logger:logger, E_LOGLEVEL:level);
 AMX_DECLARE_NATIVE(Native::SetLogLevel)
 {
-	const LoggerId_t logid = params[1];
-	if (CLogManager::Get()->IsValid(logid) == false)
+	const Logger::Id logid = params[1];
+	if (LogManager::Get()->IsValid(logid) == false)
 		return 0;
 
-	CLogManager::Get()->GetLogger(logid).
+	LogManager::Get()->GetLogger(logid).
 		SetLogLevel(static_cast<samplog::LogLevel>(params[2]));
 
 	return 1;
@@ -40,22 +41,22 @@ AMX_DECLARE_NATIVE(Native::SetLogLevel)
 // native bool:IsLogLevel(Logger:logger, E_LOGLEVEL:level);
 AMX_DECLARE_NATIVE(Native::IsLogLevel)
 {
-	const LoggerId_t logid = params[1];
-	if (CLogManager::Get()->IsValid(logid) == false)
+	const Logger::Id logid = params[1];
+	if (LogManager::Get()->IsValid(logid) == false)
 		return 0;
 
-	return CLogManager::Get()->GetLogger(logid).
+	return LogManager::Get()->GetLogger(logid).
 		IsLogLevel(static_cast<samplog::LogLevel>(params[2]));
 }
 
 // native Log(Logger:logger, E_LOGLEVEL:level, const msg[], {Float,_}:...);
 AMX_DECLARE_NATIVE(Native::Log)
 {
-	const LoggerId_t logid = params[1];
-	if (CLogManager::Get()->IsValid(logid) == false)
+	const Logger::Id logid = params[1];
+	if (LogManager::Get()->IsValid(logid) == false)
 		return 0;
 
-	auto &logger = CLogManager::Get()->GetLogger(logid);
+	auto &logger = LogManager::Get()->GetLogger(logid);
 
 	const samplog::LogLevel loglevel = static_cast<decltype(loglevel)>(params[2]);
 	if (!logger.IsLogLevel(loglevel))

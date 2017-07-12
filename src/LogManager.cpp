@@ -1,10 +1,10 @@
-#include "CLogManager.hpp"
+#include "LogManager.hpp"
 #include <samplog/DebugInfo.h>
 
 #include <string>
 
 
-bool CSampLogger::Log(LogLevel level, const char *msg, AMX *amx)
+bool Logger::Log(LogLevel level, const char *msg, AMX *amx)
 {
 	bool ret_val = false;
 	std::vector<samplog::AmxFuncCallInfo> call_info;
@@ -17,7 +17,7 @@ bool CSampLogger::Log(LogLevel level, const char *msg, AMX *amx)
 }
 
 
-LoggerId_t CLogManager::Create(std::string logname, LogLevel level, bool debuginfo)
+Logger::Id LogManager::Create(std::string logname, LogLevel level, bool debuginfo)
 {
 	if (logname.empty())
 		return 0;
@@ -28,10 +28,10 @@ LoggerId_t CLogManager::Create(std::string logname, LogLevel level, bool debugin
 	if (logname.find("log-core") == 0)
 		return 0;
 
-	LoggerId_t id = 1;
+	Logger::Id id = 1;
 	while (m_Logs.find(id) != m_Logs.end())
 		++id;
 
-	m_Logs.emplace(id, CSampLogger(std::move(logname), level, debuginfo));
+	m_Logs.emplace(id, Logger(std::move(logname), level, debuginfo));
 	return id;
 }

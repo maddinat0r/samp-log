@@ -28,8 +28,8 @@ add_samp_plugin(log-plugin
 	${SAMPSDK_DIR}/amxplugin.cpp
 	${SAMPSDK_DIR}/amxplugin2.cpp
 	${SAMPSDK_DIR}/amx/getch.c
-	CLogManager.cpp
-	CLogManager.hpp
+	LogManager.cpp
+	LogManager.hpp
 	natives.cpp
 	natives.hpp
 	CSingleton.hpp

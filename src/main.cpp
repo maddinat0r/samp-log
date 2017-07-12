@@ -1,7 +1,7 @@
 #include "natives.hpp"
 #include "version.hpp"
 #include "sdk.hpp"
-#include "CLogManager.hpp"
+#include "LogManager.hpp"
 
 #include <samplog/DebugInfo.h>
 
@@ -28,7 +28,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 
 PLUGIN_EXPORT void PLUGIN_CALL Unload() 
 {
-	CLogManager::CSingleton::Destroy();
+	LogManager::CSingleton::Destroy();
 
 	samplog::Exit();
 
