@@ -17,7 +17,7 @@
             "platform": "windows",
             "archive": true,
             "includes": "pawno/include",
-            "plugins": ["plugin/log-plugin.dll"]
+            "plugins": ["plugin/log-plugin.dll"],
             "files": {
                 "log-core.dll": "log-core.dll"
             }
