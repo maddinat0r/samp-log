@@ -1,13 +1,13 @@
 # samp-log
 
-[![sampctl](https://shields.southcla.ws/badge/sampctl-samp--log-2f2f2f.svg?style=for-the-badge)](https://github.com/SAMP-git/samp-log)
+[![sampctl](https://shields.southcla.ws/badge/sampctl-samp--log-2f2f2f.svg?style=for-the-badge)](https://github.com/maddinat0r/samp-log)
 
 ## Installation
 
 Simply install to your project:
 
 ```bash
-sampctl package install SAMP-git/samp-log
+sampctl package install maddinat0r/samp-log
 ```
 
 Include in your code and begin using the library:

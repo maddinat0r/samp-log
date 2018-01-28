@@ -7,7 +7,7 @@
             "platform": "linux",
             "archive": true,
             "includes": "pawno/include",
-            "plugins": ["plugin/log-plugin.so"],
+            "plugins": ["plugins/log-plugin.so"],
             "files": {
                 "log-core.so": "log-core.so"
             }
@@ -17,7 +17,7 @@
             "platform": "windows",
             "archive": true,
             "includes": "pawno/include",
-            "plugins": ["plugin/log-plugin.dll"],
+            "plugins": ["plugins/log-plugin.dll"],
             "files": {
                 "log-core.dll": "log-core.dll"
             }
