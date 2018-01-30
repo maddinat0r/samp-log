@@ -6,7 +6,7 @@
             "name": "^log-plugin-(.*)-[Ll]inux.tar.gz$",
             "platform": "linux",
             "archive": true,
-            "includes": "pawno/include",
+            "includes": ["pawno/include"],
             "plugins": ["plugins/log-plugin.so"],
             "files": {
                 "log-core.so": "log-core.so"
@@ -16,7 +16,7 @@
             "name": "^log-plugin-(.*)-win32.zip$",
             "platform": "windows",
             "archive": true,
-            "includes": "pawno/include",
+            "includes": ["pawno/include"],
             "plugins": ["plugins/log-plugin.dll"],
             "files": {
                 "log-core.dll": "log-core.dll"
