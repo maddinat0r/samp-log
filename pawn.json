@@ -25,6 +25,6 @@
     ],
     "contributors": ["maddinat0r"],
     "runtime": {
-        "plugins": ["maddinat0r/log-plugin"]
+        "plugins": ["maddinat0r/samp-log"]
     }
 }
