@@ -30,11 +30,11 @@ private:
 	void Clear();
 
 public:
-	inline AMX * const GetCurrentAmx()
+	inline AMX * GetCurrentAmx()
 	{
 		return m_Amx;
 	}
-	inline const decltype(m_Info) &GetCurrentInfo()
+	inline decltype(m_Info) const &GetCurrentInfo()
 	{
 		return m_Info;
 	}
