@@ -1,4 +1,5 @@
-# samp-log
+# samp-log [![Build status](https://ci.appveyor.com/api/projects/status/b4afqp6g6pe2ep86?svg=true)](https://ci.appveyor.com/project/maddinat0r/samp-log)
+
 
 [![sampctl](https://shields.southcla.ws/badge/sampctl-samp--log-2f2f2f.svg?style=for-the-badge)](https://github.com/maddinat0r/samp-log)
 
@@ -34,7 +35,7 @@ public OnGameModeInit()
     mainlog = CreateLog("main");
     playerlog = CreateLog("player/main");
     playermoneylog = CreateLog("player/money");
-    systemlog = CreateLog("system", DEBUG | INFO | WARNING | ERROR);
+    systemlog = CreateLog("system");
     
     Log(mainlog, INFO, "created all loggers");
     Log(playerlog, WARNING, "playerid %d is moving too %s", 1234, "fast");
