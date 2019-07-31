@@ -5,16 +5,21 @@
 #include <fmt/format.h>
 
 
-// native Logger:CreateLog(const name[], E_LOGLEVEL:level = INFO | WARNING | ERROR, bool:debuginfo = true);
+// native Logger:CreateLog(const name[], bool:debuginfo = true);
 AMX_DECLARE_NATIVE(Native::CreateLog)
 {
-	ScopedDebugInfo dbg_info(amx, "CreateLog", params, "sdd");
+	ScopedDebugInfo dbg_info(amx, "CreateLog", params, "sd");
 
 	const char *name = nullptr;
 	amx_StrParam(amx, params[1], name);
 
-	cell ret_val = LogManager::Get()->Create(
-		name, static_cast<LogLevel>(params[2]), params[3] != 0);
+	if (name == nullptr)
+	{
+		PluginLog::Get()->LogNative(LogLevel::ERROR, "invalid logger name");
+		return 0;
+	}
+
+	auto ret_val = static_cast<cell>(LogManager::Get()->Create(name, params[2] != 0));
 	PluginLog::Get()->LogNative(LogLevel::DEBUG, "return value: '{}'", ret_val);
 	return ret_val;
 }

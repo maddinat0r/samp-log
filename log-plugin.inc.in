@@ -23,7 +23,7 @@ enum E_LOGLEVEL
 #endif
 
 
-native Logger:CreateLog(const name[], E_LOGLEVEL:level = INFO | WARNING | ERROR, bool:debuginfo = true);
+native Logger:CreateLog(const name[], bool:debuginfo = true);
 native DestroyLog(Logger:logger);
 
 native bool:IsLogLevel(Logger:logger, E_LOGLEVEL:level);

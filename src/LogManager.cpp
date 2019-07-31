@@ -22,11 +22,11 @@ bool Logger::Log(samplog::LogLevel level, std::string &&msg, AMX *amx)
 }
 
 
-Logger::Id LogManager::Create(std::string logname, samplog::LogLevel level, bool debuginfo)
+Logger::Id LogManager::Create(std::string logname, bool debuginfo)
 {
 	PluginLog::Get()->Log(samplog::LogLevel::DEBUG, 
-		"LogManager::Create(logname='{}', level={}, debuginfo={})",
-		logname, level, debuginfo);
+		"LogManager::Create(logname='{}', debuginfo={})",
+		logname, debuginfo);
 
 	if (logname.empty())
 	{

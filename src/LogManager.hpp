@@ -58,7 +58,7 @@ private:
 	std::unordered_map<Logger::Id, Logger> m_Logs;
 
 public:
-	Logger::Id Create(std::string logname, samplog::LogLevel level, bool debuginfo);
+	Logger::Id Create(std::string logname, bool debuginfo);
 	inline bool Destroy(Logger::Id logid)
 	{
 		return m_Logs.erase(logid) == 1;
