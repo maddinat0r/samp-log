@@ -2,6 +2,7 @@
 #include "version.hpp"
 #include "sdk.hpp"
 #include "LogManager.hpp"
+#include "PluginLog.hpp"
 
 #include <samplog/samplog.hpp>
 
@@ -29,6 +30,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 PLUGIN_EXPORT void PLUGIN_CALL Unload() 
 {
 	LogManager::CSingleton::Destroy();
+	PluginLog::CSingleton::Destroy();
 
 	samplog::Api::Destroy();
 
