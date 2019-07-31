@@ -16,4 +16,4 @@ namespace Native
 	AMX_DECLARE_NATIVE(IsLogLevel);
 	AMX_DECLARE_NATIVE(Log);
 	
-};
+}
