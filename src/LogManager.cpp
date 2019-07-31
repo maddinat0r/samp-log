@@ -11,12 +11,10 @@ bool Logger::Log(samplog::LogLevel level, std::string &&msg, AMX *amx)
 	std::vector<samplog::AmxFuncCallInfo> call_info;
 	if (m_DebugInfos && samplog::Api::Get()->GetAmxFunctionCallTrace(amx, call_info))
 	{
-		PluginLog::Get()->Log(samplog::LogLevel::DEBUG, "Logger::Log - logging with debug info");
 		ret_val = m_Logger->Log(level, msg, call_info);
 	}
 	else
 	{
-		PluginLog::Get()->Log(samplog::LogLevel::DEBUG, "Logger::Log - logging without debug info");
 		ret_val = m_Logger->Log(level, msg);
 	}
 
