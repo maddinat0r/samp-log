@@ -1,0 +1,42 @@
+version: '{branch}-{build}'
+
+image:
+  - Ubuntu1604
+  - Visual Studio 2017
+
+environment:
+  global:
+    CMAKE_BUILD_PARALLEL_LEVEL: 2
+  matrix:
+    - BUILD_TYPE: Debug
+    - BUILD_TYPE: Release
+
+install:
+  # set version environment variable
+  - ps: $env:GIT_REPO_VERSION = "$(git describe --tags --always)"
+  # appveyor workaround: initialize all submodules
+  - git submodule update --init --recursive
+  # Linux: install multilib compilers
+  - sh: sudo apt-get -qq update
+  - sh: sudo apt-get -qq -y install g++-multilib gcc-multilib
+  - sh: "echo g++ version: $(g++ --version | cut -d$'\n' -f1)"
+
+before_build:
+  # set up log-core
+  # Windows
+  - cmd: appveyor DownloadFile "https://github.com/maddinat0r/samp-log-core/releases/download/v0.5/samp-log-core-v0.5-win32.zip" -FileName samp-log-core.zip
+  - cmd: 7z x samp-log-core.zip -y
+  - cmd: move samp-log-core-* "C:\samp-log-core"
+  - cmd: set LOGCORE_DIR="C:\samp-log-core\cmake"
+  # Linux
+  - sh: wget -q "https://github.com/maddinat0r/samp-log-core/releases/download/v0.5/samp-log-core-v0.5-Linux.tar.gz" -O samp-log-core.tar.gz
+  - sh: mkdir -p samp-log-core && tar zfx samp-log-core.tar.gz -C samp-log-core --strip-components=1
+  - sh: export LOGCORE_DIR="samp-log-core/cmake"
+
+build_script:
+  - ps: cmake -Dlog-core_DIR="$env:LOGCORE_DIR" -DLOG_PLUGIN_VERSION="$env:GIT_REPO_VERSION" -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" -S . -B build
+  - ps: cmake --build build --config $env:BUILD_TYPE --target package
+
+artifacts:
+  - path: 'build/*.zip'
+  - path: 'build/*.tar.gz'
