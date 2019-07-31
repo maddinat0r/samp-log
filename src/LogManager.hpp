@@ -5,7 +5,7 @@
 #include "sdk.hpp"
 
 #include <string>
-#include <map>
+#include <unordered_map>
 
 
 class Logger
@@ -55,7 +55,7 @@ private:
 	~LogManager() = default;
 
 private:
-	std::map<Logger::Id, Logger> m_Logs;
+	std::unordered_map<Logger::Id, Logger> m_Logs;
 
 public:
 	Logger::Id Create(std::string logname, samplog::LogLevel level, bool debuginfo);
