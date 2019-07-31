@@ -127,33 +127,43 @@ AMX_DECLARE_NATIVE(Native::Log)
 			*param_addr = nullptr,
 			&param = params[first_param_idx + param_counter++];
 
+		auto fmt_str = fmt::format("{{:{:c}}}", format_spec == 'i' ? 'd' : format_spec);
 		switch (format_spec)
 		{
 		case 's': // string
-			fmt::format_to(str_writer, "{:s}", amx_GetCppString(amx, param));
-			break;
+			fmt::format_to(str_writer, fmt_str, amx_GetCppString(amx, param));
+			break; 
 		case 'd': // decimal
-		case 'i': // integer
+		case 'i': // custom decimal alias
+		case 'o': // octal
+		case 'x': // hex lowercase
+		case 'X': // hex uppercase
+		case 'b': // binary
 			if (amx_GetAddr(amx, param, &param_addr) != AMX_ERR_NONE || param_addr == nullptr)
 			{
 				PluginLog::Get()->LogNative(LogLevel::ERROR,
 					"error while retrieving AMX address");
 				return 0;
 			}
-			fmt::format_to(str_writer, "{:d}", static_cast<int>(*param_addr));
+			fmt::format_to(str_writer, fmt_str, static_cast<int>(*param_addr));
 			break;
 		case 'f': // float
+		case 'F': // float with uppercase 'NAN' and 'INF'
+		case 'e': // exponent notation
+		case 'E': // exponent notation (uppercase 'E')
+		case 'g': // general format (combination of 'f' and 'e')
+		case 'G': // general format (uppercase)
 			if (amx_GetAddr(amx, param, &param_addr) != AMX_ERR_NONE || param_addr == nullptr)
 			{
 				PluginLog::Get()->LogNative(LogLevel::ERROR,
 					"error while retrieving AMX address");
 				return 0;
 			}
-			fmt::format_to(str_writer, "{:f}", amx_ctof(*param_addr));
+			fmt::format_to(str_writer, fmt_str, amx_ctof(*param_addr));
 			break;
 		default:
 			PluginLog::Get()->LogNative(LogLevel::ERROR,
-				"invalid format specifier '%{:c}'", format_spec); // TODO test "c"
+				"invalid format specifier '%{:c}'", format_spec);
 			return 0;
 		}
 	}
