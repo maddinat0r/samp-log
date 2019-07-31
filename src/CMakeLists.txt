@@ -58,7 +58,7 @@ if(MSVC)
 	)
 endif()
 
-target_link_libraries(log-plugin log-core)
+target_link_libraries(log-plugin log-core fmt)
 
 if(UNIX)
 	set_target_properties(log-plugin PROPERTIES
@@ -83,6 +83,8 @@ endif()
 
 
 install(TARGETS log-plugin DESTINATION "plugins/")
+get_target_property(LOGCORE_LOCATION log-core LOCATION)
+install(FILES "${LOGCORE_LOCATION}" DESTINATION "./")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/log-plugin.inc" DESTINATION "pawno/include/")
 install(FILES "${PROJECT_SOURCE_DIR}/LICENSE" DESTINATION "./")
 

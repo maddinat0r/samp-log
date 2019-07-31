@@ -3,7 +3,7 @@
 #include "sdk.hpp"
 #include "LogManager.hpp"
 
-#include <samplog/DebugInfo.h>
+#include <samplog/samplog.hpp>
 
 
 extern void	*pAMXFunctions;
@@ -19,9 +19,9 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 {
 	pAMXFunctions = ppData[PLUGIN_DATA_AMX_EXPORTS];
 	logprintf = (logprintf_t)ppData[PLUGIN_DATA_LOGPRINTF];
-
-	samplog::Init();
 	
+	samplog::Api::Get(); // force init
+
 	logprintf(" >> plugin.log: v" LOG_PLUGIN_VERSION " successfully loaded.");
 	return true;
 }
@@ -30,7 +30,7 @@ PLUGIN_EXPORT void PLUGIN_CALL Unload()
 {
 	LogManager::CSingleton::Destroy();
 
-	samplog::Exit();
+	samplog::Api::Destroy();
 
 	logprintf("plugin.log: Plugin unloaded."); 
 }
@@ -38,11 +38,8 @@ PLUGIN_EXPORT void PLUGIN_CALL Unload()
 
 extern "C" const AMX_NATIVE_INFO native_list[] = 
 {
-	AMX_DEFINE_NATIVE(SetLogPluginLogLevel)
-
 	AMX_DEFINE_NATIVE(CreateLog)
 	AMX_DEFINE_NATIVE(DestroyLog)
-	AMX_DEFINE_NATIVE(SetLogLevel)
 	AMX_DEFINE_NATIVE(IsLogLevel)
 	AMX_DEFINE_NATIVE(Log)
 	{NULL, NULL}
@@ -50,12 +47,12 @@ extern "C" const AMX_NATIVE_INFO native_list[] =
 
 PLUGIN_EXPORT int PLUGIN_CALL AmxLoad(AMX *amx) 
 {
-	samplog::RegisterAmx(amx);
+	samplog::Api::Get()->RegisterAmx(amx);
 	return amx_Register(amx, native_list, -1);
 }
 
 PLUGIN_EXPORT int PLUGIN_CALL AmxUnload(AMX *amx) 
 {
-	samplog::EraseAmx(amx);
+	samplog::Api::Get()->EraseAmx(amx);
 	return AMX_ERR_NONE;
 }

@@ -14,8 +14,12 @@ if(UNIX)
 	set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS OFF)
 endif()
 
-option(LOGCORE_INSTALL_DEV OFF)
-mark_as_advanced(LOGCORE_INSTALL_DEV)
-add_subdirectory(libs/log-core)
+
+add_subdirectory(libs/fmt)
+mark_as_advanced(FMT_TEST FMT_INSTALL FMT_PEDANTIC FMT_DOC FMT_USE_CPP11 FMT_WERROR)
+
+
+find_package(log-core REQUIRED CONFIG)
+
 
 add_subdirectory(src)

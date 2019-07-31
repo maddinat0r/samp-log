@@ -1,6 +1,6 @@
 #pragma once
 
-#include <samplog/Logger.h>
+#include <samplog/samplog.hpp>
 #include "CSingleton.hpp"
 #include "sdk.hpp"
 
@@ -14,26 +14,34 @@ public:
 	using Id = unsigned int;
 
 public:
-	Logger(std::string &&name, samplog::LogLevel level, bool debuginfo) :
-		m_Module(std::move(name)),
-		LogLevel(level),
+	Logger(samplog::Logger_t &&logger, bool debuginfo) :
+		m_Logger(std::move(logger)),
 		m_DebugInfos(debuginfo)
 	{ }
 	~Logger() = default;
 
-public:
-	bool Log(samplog::LogLevel level, const char *msg, AMX *amx);
-
-	inline bool IsLogLevel(samplog::LogLevel log_level) const
+	Logger(const Logger&) = delete;
+	Logger operator=(const Logger&) = delete;
+	Logger(Logger &&logger) :
+		m_Logger(std::move(logger.m_Logger)),
+		m_DebugInfos(logger.m_DebugInfos)
+	{ }
+	Logger operator=(Logger &&logger)
 	{
-		return (LogLevel & log_level) == log_level;
+		return Logger(std::move(logger.m_Logger), logger.m_DebugInfos);
 	}
 
 public:
-	samplog::LogLevel LogLevel;
+	bool Log(samplog::LogLevel level, std::string &&msg, AMX *amx);
+
+	inline bool IsLogLevel(samplog::LogLevel log_level) const
+	{
+		return m_Logger->IsLogLevel(log_level);
+	}
 
 private:
-	std::string m_Module;
+	samplog::Logger_t m_Logger;
+
 	bool m_DebugInfos;
 
 };

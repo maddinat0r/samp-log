@@ -1,27 +1,23 @@
 #include "LogManager.hpp"
 #include "PluginLog.hpp"
-#include <samplog/DebugInfo.h>
-
-#include <string>
 
 
-bool Logger::Log(samplog::LogLevel level, const char *msg, AMX *amx)
+bool Logger::Log(samplog::LogLevel level, std::string &&msg, AMX *amx)
 {
 	PluginLog::Get()->Log(samplog::LogLevel::DEBUG, "Logger::Log(level={}, msg='{}', amx={})",
 		level, msg, static_cast<const void *>(amx));
 
 	bool ret_val = false;
 	std::vector<samplog::AmxFuncCallInfo> call_info;
-	if (m_DebugInfos && samplog::GetAmxFunctionCallTrace(amx, call_info))
+	if (m_DebugInfos && samplog::Api::Get()->GetAmxFunctionCallTrace(amx, call_info))
 	{
 		PluginLog::Get()->Log(samplog::LogLevel::DEBUG, "Logger::Log - logging with debug info");
-		ret_val = samplog::LogMessage(m_Module.c_str(), level, msg, 
-			call_info.data(), call_info.size());
+		ret_val = m_Logger->Log(level, msg, call_info);
 	}
 	else
 	{
 		PluginLog::Get()->Log(samplog::LogLevel::DEBUG, "Logger::Log - logging without debug info");
-		ret_val = samplog::LogMessage(m_Module.c_str(), level, msg);
+		ret_val = m_Logger->Log(level, msg);
 	}
 
 	return ret_val;
@@ -59,8 +55,9 @@ Logger::Id LogManager::Create(std::string logname, samplog::LogLevel level, bool
 	while (m_Logs.find(id) != m_Logs.end())
 		++id;
 
-	PluginLog::Get()->Log(samplog::LogLevel::INFO, "created logger '{}' with id {}", logname, id);
+	PluginLog::Get()->Log(samplog::LogLevel::INFO, 
+		"created logger '{}' with id {}", logname, id);
 
-	m_Logs.emplace(id, Logger(std::move(logname), level, debuginfo));
+	m_Logs.emplace(id, Logger(samplog::Api::Get()->CreateLogger(logname.c_str()), debuginfo));
 	return id;
 }

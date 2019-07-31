@@ -5,15 +5,6 @@
 #include <fmt/format.h>
 
 
-// native SetLogPluginLogLevel(E_LOGLEVEL:level);
-AMX_DECLARE_NATIVE(Native::SetLogPluginLogLevel)
-{
-	ScopedDebugInfo dbg_info(amx, "SetLogPluginLogLevel", params, "d");
-
-	PluginLog::Get()->SetLogLevel(static_cast<samplog::LogLevel>(params[1]));
-	return 1;
-}
-
 // native Logger:CreateLog(const name[], E_LOGLEVEL:level = INFO | WARNING | ERROR, bool:debuginfo = true);
 AMX_DECLARE_NATIVE(Native::CreateLog)
 {
@@ -43,24 +34,6 @@ AMX_DECLARE_NATIVE(Native::DestroyLog)
 	cell ret_val = LogManager::Get()->Destroy(logid) ? 1 : 0;
 	PluginLog::Get()->LogNative(LogLevel::DEBUG, "return value: '{}'", ret_val);
 	return ret_val;
-}
-
-// native SetLogLevel(Logger:logger, E_LOGLEVEL:level);
-AMX_DECLARE_NATIVE(Native::SetLogLevel)
-{
-	ScopedDebugInfo dbg_info(amx, "SetLogLevel", params, "dd");
-
-	const Logger::Id logid = params[1];
-	if (LogManager::Get()->IsValid(logid) == false)
-	{
-		PluginLog::Get()->LogNative(LogLevel::ERROR, "invalid log id '{}'", logid);
-		return 0;
-	}
-
-	LogManager::Get()->GetLogger(logid).
-		LogLevel = static_cast<samplog::LogLevel>(params[2]);
-
-	return 1;
 }
 
 // native bool:IsLogLevel(Logger:logger, E_LOGLEVEL:level);
@@ -99,8 +72,7 @@ AMX_DECLARE_NATIVE(Native::Log)
 	if (!logger.IsLogLevel(loglevel))
 	{
 		PluginLog::Get()->LogNative(LogLevel::DEBUG, 
-			"log level not set, not logging message (current log level: '{}')",
-			logger.LogLevel);
+			"log level not set, not logging message");
 		return 0;
 	}
 
@@ -113,7 +85,7 @@ AMX_DECLARE_NATIVE(Native::Log)
 		num_dyn_args = num_args - (first_param_idx - 1);
 	unsigned int param_counter = 0;
 
-	fmt::MemoryWriter str_writer;
+	fmt::memory_buffer str_writer;
 
 	size_t
 		spec_pos = std::string::npos,
@@ -128,13 +100,14 @@ AMX_DECLARE_NATIVE(Native::Log)
 			return 0;
 		}
 
-		str_writer << format_str.substr(spec_offset, spec_pos - spec_offset);
+		fmt::format_to(str_writer, "{:s}",
+			format_str.substr(spec_offset, spec_pos - spec_offset));
 		spec_offset = spec_pos + 2; // 2 = '%' + char specifier (like 'd' or 's')
 
 		const char format_spec = format_str.at(spec_pos + 1);
 		if (format_spec == '%')
 		{
-			str_writer << '%';
+			str_writer.push_back('%');
 			continue;
 		}
 
@@ -152,7 +125,7 @@ AMX_DECLARE_NATIVE(Native::Log)
 		switch (format_spec)
 		{
 		case 's': // string
-			str_writer << amx_GetCppString(amx, param);
+			fmt::format_to(str_writer, "{:s}", amx_GetCppString(amx, param));
 			break;
 		case 'd': // decimal
 		case 'i': // integer
@@ -162,7 +135,7 @@ AMX_DECLARE_NATIVE(Native::Log)
 					"error while retrieving AMX address");
 				return 0;
 			}
-			str_writer << static_cast<int>(*param_addr);
+			fmt::format_to(str_writer, "{:d}", static_cast<int>(*param_addr));
 			break;
 		case 'f': // float
 			if (amx_GetAddr(amx, param, &param_addr) != AMX_ERR_NONE || param_addr == nullptr)
@@ -171,19 +144,19 @@ AMX_DECLARE_NATIVE(Native::Log)
 					"error while retrieving AMX address");
 				return 0;
 			}
-			str_writer << amx_ctof(*param_addr);
+			fmt::format_to(str_writer, "{:f}", amx_ctof(*param_addr));
 			break;
 		default:
 			PluginLog::Get()->LogNative(LogLevel::ERROR,
-				"invalid format specifier '%{}'", format_spec);
+				"invalid format specifier '%{:c}'", format_spec); // TODO test "c"
 			return 0;
 		}
 	}
 
 	// copy rest of format string
-	str_writer << format_str.substr(spec_offset);
+	fmt::format_to(str_writer, "{:s}", format_str.substr(spec_offset));
 	
-	cell ret_val = logger.Log(loglevel, str_writer.c_str(), amx) ? 1 : 0;
+	cell ret_val = logger.Log(loglevel, fmt::to_string(str_writer), amx) ? 1 : 0;
 	PluginLog::Get()->LogNative(LogLevel::DEBUG, "return value: '{}'", ret_val);
 	return ret_val;
 }

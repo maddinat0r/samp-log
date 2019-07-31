@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
-
-#include <samplog/PluginLogger.h>
+#include <samplog/samplog.hpp>
 #include "CSingleton.hpp"
 
 #include <fmt/format.h>
@@ -62,37 +60,37 @@ private:
 	~PluginLog() = default;
 
 public:
-	void SetLogLevel(LogLevel level);
 	inline bool IsLogLevel(LogLevel level)
 	{
 		return m_Logger.IsLogLevel(level);
 	}
 
 	template<typename... Args>
+	inline void Log(LogLevel level, const char *msg)
+	{
+		m_Logger.Log(level, msg);
+	}
+
+	template<typename... Args>
 	inline void Log(LogLevel level, const char *format, Args &&...args)
 	{
-		if (!IsLogLevel(level))
-			return;
-
-		std::string str = format;
-		if (sizeof...(args) != 0)
-			str = fmt::format(format, std::forward<Args>(args)...);
-
+		auto str = fmt::format(format, std::forward<Args>(args)...);
 		m_Logger.Log(level, str.c_str());
 	}
 
 	template<typename... Args>
 	inline void Log(LogLevel level, std::vector<AmxFuncCallInfo> const &callinfo,
-					const char *format, Args &&...args)
+		const char *msg)
 	{
-		if (!IsLogLevel(level))
-			return;
+		m_Logger.Log(level, msg, callinfo);
+	}
 
-		std::string str = format;
-		if (sizeof...(args) != 0)
-			str = fmt::format(format, std::forward<Args>(args)...);
-
-		m_Logger.CLogger::Log(level, str.c_str(), callinfo);
+	template<typename... Args>
+	inline void Log(LogLevel level, std::vector<AmxFuncCallInfo> const &callinfo,
+		const char *format, Args &&...args)
+	{
+		auto str = fmt::format(format, std::forward<Args>(args)...);
+		m_Logger.Log(level, str.c_str(), callinfo);
 	}
 
 	// should only be called in native functions
@@ -105,7 +103,7 @@ public:
 		if (DebugInfoManager::Get()->GetCurrentAmx() == nullptr)
 			return; //do nothing, since we're not called from within a native func
 
-		std::string msg = fmt::format("{}: {}",
+		std::string msg = fmt::format("{:s}: {:s}",
 			DebugInfoManager::Get()->GetCurrentNativeName(),
 			fmt::format(fmt, std::forward<Args>(args)...));
 
