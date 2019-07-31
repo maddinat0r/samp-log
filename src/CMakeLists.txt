@@ -6,11 +6,6 @@ set(SAMP_SDK_ROOT "${PROJECT_SOURCE_DIR}/libs/sdk")
 find_package(SAMPSDK REQUIRED)
 
 set(LOG_PLUGIN_CONFIG_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/config_headers")
-include_directories(
-	${SAMPSDK_INCLUDE_DIR}
-	${LOG_PLUGIN_CONFIG_INCLUDE_DIR}
-	${PROJECT_SOURCE_DIR}/libs/log-core/include
-)
 
 configure_file(
 	"../log-plugin.inc.in"
@@ -24,10 +19,10 @@ configure_file(
 	@ONLY
 )
 
+
 add_samp_plugin(log-plugin 
 	${SAMPSDK_DIR}/amxplugin.cpp
 	${SAMPSDK_DIR}/amxplugin2.cpp
-	${SAMPSDK_DIR}/amx/getch.c
 	PluginLog.cpp
 	PluginLog.hpp
 	LogManager.cpp
@@ -40,44 +35,57 @@ add_samp_plugin(log-plugin
 	plugin.def
 )
 
-target_compile_features(log-plugin PUBLIC 
-	cxx_auto_type 
-	cxx_decltype 
-	cxx_defaulted_functions 
-	cxx_default_function_template_args
-	cxx_delegating_constructors
-	cxx_deleted_functions
-	cxx_enum_forward_declarations
-	cxx_explicit_conversions
-	cxx_extended_friend_declarations
-	cxx_lambdas
-	cxx_inheriting_constructors
-	cxx_noexcept
-	cxx_nonstatic_member_init
-	cxx_nullptr
-	cxx_range_for
-	cxx_reference_qualified_functions
-	cxx_right_angle_brackets
-	cxx_rvalue_references
-	cxx_strong_enums
-	cxx_variadic_templates
-)
-
-add_dependencies(log-plugin log-core fmt)
-
-if(MSVC)
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS -DNOMINMAX)
+if (UNIX)
+	target_sources(log-plugin PUBLIC ${SAMPSDK_DIR}/amx/getch.c)
 endif()
 
-target_link_libraries(log-plugin log-core fmt)
+set_property(TARGET log-plugin PROPERTY CXX_STANDARD 11)
+set_property(TARGET log-plugin PROPERTY CXX_STANDARD_REQUIRED ON)
+
+target_include_directories(log-plugin PRIVATE
+	${SAMPSDK_INCLUDE_DIR}
+	${LOG_PLUGIN_CONFIG_INCLUDE_DIR}
+	${PROJECT_SOURCE_DIR}/libs/log-core/include
+)
+
+if(MSVC)
+	target_compile_definitions(log-plugin PRIVATE
+		BOOST_ALL_NO_LIB # disable auto-linking
+		_CRT_SECURE_NO_WARNINGS
+		NOMINMAX
+		_WIN32_WINNT=0x0600
+		_SCL_SECURE_NO_WARNINGS
+	)
+endif()
+
+target_link_libraries(log-plugin log-core)
 
 if(UNIX)
 	set_target_properties(log-plugin PROPERTIES
 		INSTALL_RPATH "$ORIGIN/..:$ORIGIN/")
 endif()
 
+# increase warning levels
+if (MSVC)
+	target_compile_options(log-plugin PRIVATE
+		/W4
+		/WX
+		/permissive-
+	)
+elseif(UNIX)
+	target_compile_options(log-plugin PRIVATE
+		-Wall
+		-Wextra
+		-pedantic
+		-Werror
+	)
+endif()
+
+
 install(TARGETS log-plugin DESTINATION "plugins/")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/log-plugin.inc" DESTINATION "pawno/include/")
+install(FILES "${PROJECT_SOURCE_DIR}/LICENSE" DESTINATION "./")
+
 
 set(CPACK_PACKAGE_VERSION ${LOG_PLUGIN_VERSION})
 if(WIN32)
