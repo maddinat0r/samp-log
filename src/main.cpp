@@ -3,6 +3,7 @@
 #include "sdk.hpp"
 #include "LogManager.hpp"
 #include "PluginLog.hpp"
+#include "SampConfigReader.hpp"
 
 #include <samplog/samplog.hpp>
 

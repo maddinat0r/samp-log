@@ -29,6 +29,8 @@ add_samp_plugin(log-plugin
 	LogManager.hpp
 	natives.cpp
 	natives.hpp
+	SampConfigReader.cpp
+	SampConfigReader.hpp
 	Singleton.hpp
 	main.cpp
 	sdk.hpp
