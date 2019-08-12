@@ -2,6 +2,8 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <algorithm>
+#include <cctype>
 
 
 void ServerLogHook::logprintf(char* format, ...)
@@ -14,7 +16,15 @@ void ServerLogHook::logprintf(char* format, ...)
 
 	va_end(args);
 
-	ServerLogHook::Get()->_log->Log(samplog::LogLevel::INFO, std::string(buffer));
+
+	auto msg = std::string(buffer);
+	msg.erase(
+		std::remove_if(
+			msg.begin(),
+			msg.end(),
+			[](unsigned char c) { return std::iscntrl(c); }));
+
+	ServerLogHook::Get()->_log->Log(level, std::move(msg));
 }
 
 void ServerLogHook::Install(void *logprintf_func)
