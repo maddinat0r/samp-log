@@ -11,7 +11,7 @@ void ServerLogHook::logprintf(char* format, ...)
 	va_list args;
 	va_start(args, format);
 
-	char buffer[1024];
+	char buffer[512];
 	vsprintf(buffer, format, args);
 
 	va_end(args);
