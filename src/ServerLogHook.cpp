@@ -24,6 +24,12 @@ void ServerLogHook::logprintf(char* format, ...)
 			msg.end(),
 			[](unsigned char c) { return std::iscntrl(c); }));
 
+	samplog::LogLevel level;
+	if (msg.find(": Run time error ") != std::string::npos)
+		level = samplog::LogLevel::FATAL;
+	else
+		level = samplog::LogLevel::INFO;
+
 	ServerLogHook::Get()->_log->Log(level, std::move(msg));
 }
 
