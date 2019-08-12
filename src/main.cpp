@@ -29,7 +29,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 	if (SampConfigReader::Get()->GetVar("logplugin_capture_serverlog", hook_setting_value) &&
 		hook_setting_value == "1")
 	{
-		ServerLogHook::Get()->Install(logprintf);
+		ServerLogHook::Get()->Install(reinterpret_cast<void *>(logprintf));
 	}
 
 	logprintf(" >> plugin.log: v" LOG_PLUGIN_VERSION " successfully loaded.");

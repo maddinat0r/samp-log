@@ -36,5 +36,5 @@ void ServerLogHook::logprintf(char* format, ...)
 void ServerLogHook::Install(void *logprintf_func)
 {
 	_log = samplog::Api::Get()->CreateLogger("samp-server");
-	_hook.Install(logprintf_func, ServerLogHook::logprintf);
+	_hook.Install(logprintf_func, reinterpret_cast<void *>(ServerLogHook::logprintf));
 }
