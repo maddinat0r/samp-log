@@ -1,7 +1,7 @@
 #pragma once
 
 #include <samplog/samplog.hpp>
-#include "CSingleton.hpp"
+#include "Singleton.hpp"
 #include "sdk.hpp"
 
 #include <string>
@@ -47,9 +47,9 @@ private:
 };
 
 
-class LogManager : public CSingleton<LogManager>
+class LogManager : public Singleton<LogManager>
 {
-	friend class CSingleton<LogManager>;
+	friend class Singleton<LogManager>;
 private:
 	LogManager() = default;
 	~LogManager() = default;

@@ -2,14 +2,14 @@
 
 
 template<class T>
-class CSingleton
+class Singleton
 {
 protected:
 	static T *m_Instance;
 
 public:
-	CSingleton() { }
-	virtual ~CSingleton() { }
+	Singleton() { }
+	virtual ~Singleton() { }
 
 	inline static T *Get()
 	{
@@ -29,4 +29,4 @@ public:
 };
 
 template <class T>
-T* CSingleton<T>::m_Instance = nullptr;
+T* Singleton<T>::m_Instance = nullptr;

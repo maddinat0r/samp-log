@@ -1,7 +1,7 @@
 #pragma once
 
 #include <samplog/samplog.hpp>
-#include "CSingleton.hpp"
+#include "Singleton.hpp"
 
 #include <fmt/format.h>
 
@@ -10,9 +10,9 @@ using samplog::LogLevel;
 using samplog::AmxFuncCallInfo;
 
 
-class DebugInfoManager : public CSingleton<DebugInfoManager>
+class DebugInfoManager : public Singleton<DebugInfoManager>
 {
-	friend class CSingleton<DebugInfoManager>;
+	friend class Singleton<DebugInfoManager>;
 	friend class ScopedDebugInfo;
 private:
 	DebugInfoManager() = default;
@@ -49,9 +49,9 @@ public:
 };
 
 
-class PluginLog : public CSingleton<PluginLog>
+class PluginLog : public Singleton<PluginLog>
 {
-	friend class CSingleton<PluginLog>;
+	friend class Singleton<PluginLog>;
 	friend class ScopedDebugInfo;
 private:
 	PluginLog() :

@@ -29,8 +29,8 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 
 PLUGIN_EXPORT void PLUGIN_CALL Unload() 
 {
-	LogManager::CSingleton::Destroy();
-	PluginLog::CSingleton::Destroy();
+	LogManager::Singleton::Destroy();
+	PluginLog::Singleton::Destroy();
 
 	samplog::Api::Destroy();
 

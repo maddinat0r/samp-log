@@ -29,7 +29,7 @@ add_samp_plugin(log-plugin
 	LogManager.hpp
 	natives.cpp
 	natives.hpp
-	CSingleton.hpp
+	Singleton.hpp
 	main.cpp
 	sdk.hpp
 	plugin.def
