@@ -4,6 +4,7 @@
 #include "LogManager.hpp"
 #include "PluginLog.hpp"
 #include "SampConfigReader.hpp"
+#include "ServerLogHook.hpp"
 
 #include <samplog/samplog.hpp>
 
@@ -24,12 +25,21 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 	
 	samplog::Api::Get(); // force init
 
+	std::string hook_setting_value;
+	if (SampConfigReader::Get()->GetVar("logplugin_capture_serverlog", hook_setting_value) &&
+		hook_setting_value == "1")
+	{
+		ServerLogHook::Get()->Install(logprintf);
+	}
+
 	logprintf(" >> plugin.log: v" LOG_PLUGIN_VERSION " successfully loaded.");
 	return true;
 }
 
 PLUGIN_EXPORT void PLUGIN_CALL Unload() 
 {
+	SampConfigReader::Singleton::Destroy();
+	ServerLogHook::Singleton::Destroy();
 	LogManager::Singleton::Destroy();
 	PluginLog::Singleton::Destroy();
 

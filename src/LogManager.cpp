@@ -42,7 +42,7 @@ Logger::Id LogManager::Create(std::string logname, bool debuginfo)
 		return 0;
 	}
 
-	if (logname.find("log-core") == 0)
+	if (logname.find("log-core") == 0 || logname.find("samp-server") == 0)
 	{
 		PluginLog::Get()->Log(samplog::LogLevel::ERROR,
 			"LogManager::Create - invalid log name");

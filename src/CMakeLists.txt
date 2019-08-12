@@ -31,6 +31,8 @@ add_samp_plugin(log-plugin
 	natives.hpp
 	SampConfigReader.cpp
 	SampConfigReader.hpp
+	ServerLogHook.cpp
+	ServerLogHook.hpp
 	Singleton.hpp
 	main.cpp
 	sdk.hpp
@@ -60,7 +62,7 @@ if(MSVC)
 	)
 endif()
 
-target_link_libraries(log-plugin log-core fmt)
+target_link_libraries(log-plugin log-core fmt subhook)
 
 if(UNIX)
 	set_target_properties(log-plugin PROPERTIES
