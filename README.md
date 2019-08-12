@@ -18,7 +18,7 @@ Include in your code and begin using the library:
 ```
 
 ## Usage
-
+`gamemode.pwn`:
 ```pawn
 #include <a_samp>
 #include <log-plugin>
@@ -54,3 +54,38 @@ public OnGameModeExit()
     return 1;
 }
 ```
+
+`log-config.yml`:
+```yaml
+Logger:
+  plugins/log-plugin:
+    Append: false # deletes the plugin log file on server startup
+  main:
+    LogLevel:
+      - Fatal
+      - Error
+      - Warning
+      - Info
+  player/main:
+    LogLevel: All
+  player/money:
+    LogLevel:
+      - Error
+      - Warning
+  system:
+    LogLevel: None
+  samp-server: # see "Server console redirection" down below
+    LogLevel: All
+LogLevel:
+  Fatal:
+    PrintToConsole: true
+  Error:
+    PrintToConsole: true
+  Warning:
+    PrintToConsole: true
+EnableColors: true
+LogTimeFormat: '%F %H:%M:%S'
+```
+
+## Server console redirection
+When adding `logplugin_capture_serverlog 1` to the `server.cfg` file, the plugin will redirect all console output (starting at the time of the plugin being loaded and ending when it's unloaded) to a logger named `samp-server`. This logger is configurable like every other logger.
