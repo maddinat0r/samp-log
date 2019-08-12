@@ -34,7 +34,7 @@ before_build:
   - sh: export LOGCORE_DIR="samp-log-core/cmake"
 
 build_script:
-  - ps: cmake -Dlog-core_DIR="$env:LOGCORE_DIR" -DLOG_PLUGIN_VERSION="$env:GIT_REPO_VERSION" -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" -S . -B build
+  - ps: cmake -Wno-dev -Dlog-core_DIR="$env:LOGCORE_DIR" -DLOG_PLUGIN_VERSION="$env:GIT_REPO_VERSION" -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" -S . -B build
   - ps: cmake --build build --config $env:BUILD_TYPE --target package
 
 artifacts:
