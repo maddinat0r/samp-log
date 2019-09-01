@@ -88,4 +88,4 @@ LogTimeFormat: '%F %H:%M:%S'
 ```
 
 ## Server console redirection
-When adding `logplugin_capture_serverlog 1` to the `server.cfg` file, the plugin will redirect all console output (starting at the time of the plugin being loaded and ending when it's unloaded) to a logger named `samp-server`. This logger is configurable like every other logger.
+When adding `logplugin_capture_serverlog 1` to the `server.cfg` file, the plugin will redirect all console output (starting at the time of the plugin being loaded and ending when it's unloaded) to a logger named `samp-server`. This logger is configurable like every other logger. Almost all console messages are logged with the `INFO` log level (run time errors are logged as `FATAL`), so make sure to at least enable this log level to see any output in the log file.
