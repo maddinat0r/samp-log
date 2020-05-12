@@ -8,8 +8,8 @@ environment:
   global:
     CMAKE_BUILD_PARALLEL_LEVEL: 2
   matrix:
-    - BUILD_TYPE: Debug
     - BUILD_TYPE: Release
+    - BUILD_TYPE: Debug
 
 install:
   # set version environment variable
