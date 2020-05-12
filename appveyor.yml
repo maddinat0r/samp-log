@@ -20,6 +20,13 @@ install:
   - sh: sudo apt-get -qq update
   - sh: sudo apt-get -qq -y install g++-multilib gcc-multilib
   - sh: "echo g++ version: $(g++ --version | cut -d$'\n' -f1)"
+  # set CMake platform arg on MSVC
+  - ps: |
+      if ($isWindows) { 
+        $CMAKE_ARGS = "-AWin32", "-Thost=x86"
+      } else {
+        $CMAKE_ARGS = "-DCMAKE_CXX_FLAGS=-m32", "-DCMAKE_C_FLAGS=-m32"
+      }
 
 before_build:
   # set up log-core
@@ -34,7 +41,7 @@ before_build:
   - sh: export LOGCORE_DIR="samp-log-core/cmake"
 
 build_script:
-  - ps: cmake -Wno-dev -Dlog-core_DIR="$env:LOGCORE_DIR" -DLOG_PLUGIN_VERSION="$env:GIT_REPO_VERSION" -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" -S . -B build
+  - ps: cmake -Wno-dev -Dlog-core_DIR="$env:LOGCORE_DIR" -DLOG_PLUGIN_VERSION="$env:GIT_REPO_VERSION" -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" @CMAKE_ARGS -S . -B build
   - ps: cmake --build build --config $env:BUILD_TYPE --target package
 
 artifacts:
