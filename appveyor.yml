@@ -31,12 +31,12 @@ install:
 before_build:
   # set up log-core
   # Windows
-  - cmd: appveyor DownloadFile "https://github.com/maddinat0r/samp-log-core/releases/download/v0.5/samp-log-core-v0.5-win32.zip" -FileName samp-log-core.zip
+  - cmd: appveyor DownloadFile "https://github.com/maddinat0r/samp-log-core/releases/download/v0.5.2/samp-log-core-v0.5.2-win32.zip" -FileName samp-log-core.zip
   - cmd: 7z x samp-log-core.zip -y
   - cmd: move samp-log-core-* "C:\samp-log-core"
   - cmd: set LOGCORE_DIR="C:\samp-log-core\cmake"
   # Linux
-  - sh: wget -q "https://github.com/maddinat0r/samp-log-core/releases/download/v0.5/samp-log-core-v0.5-Linux.tar.gz" -O samp-log-core.tar.gz
+  - sh: wget -q "https://github.com/maddinat0r/samp-log-core/releases/download/v0.5.2/samp-log-core-v0.5.2-Linux.tar.gz" -O samp-log-core.tar.gz
   - sh: mkdir -p samp-log-core && tar zfx samp-log-core.tar.gz -C samp-log-core --strip-components=1
   - sh: export LOGCORE_DIR="samp-log-core/cmake"
 
