@@ -1,8 +1,8 @@
 version: '{branch}-{build}'
 
 image:
-  - Ubuntu1604
-  - Visual Studio 2017
+  - Ubuntu1804
+  - Visual Studio 2019
 
 environment:
   global:
